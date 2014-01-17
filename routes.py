@@ -28,8 +28,9 @@ def sensor_data():
 		return jsonify(items=json_results)
 	if request.method == 'POST':
 		global db
-		db.session.add(sensor_data(request.json["sensor_id"],request.json["value"]))
-		db.commit()
+		db.session.add(sensor_values(request.json["sensor_id"],request.json["value"]))
+		db.session.commit()
+		return "ok"
 
 if __name__ == '__main__':
   app.run(debug=True)
