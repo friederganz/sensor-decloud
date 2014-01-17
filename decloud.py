@@ -175,7 +175,55 @@ def penetration(create_user=False):
     from matplotlib import pyplot as plt
     plt.plot(times)
     plt.show()
-penetration()
+
+
+class _fire_local(threading.Thread):
+    def __init__ (self):
+        threading.Thread.__init__(self)
+    def run(self):
+        for i in range(0,100):
+            #create_datapoint(self.stream_id,"bla",randrange(0,40))
+	       url = "http://localhost:5000/sensor_data/"
+               headers = {'Content-type': 'application/json'}
+	       sensor_id = 23 
+	       value  = 42
+               data = {"sensor_id":sensor_id,"value": value}
+               req = urllib2.Request(url,json.dumps(data), headers)
+               response = urllib2.urlopen(req)
+               h = response.read()
+#	       print(h)
+
+class _read_local(threading.Thread):
+    def __init__ (self):
+        threading.Thread.__init__(self)
+    def run(self):
+        for i in range(0,100):
+            #read_datapoints(self.stream_id)
+	     response = urllib2.urlopen("http://localhost:5000/sensor_data/")
+	     h = response.read()
+#             print(h)
+
+def penetration_local():
+    times = []
+    for scale in [1,2,3,4,5,6,7,8,9,10,50,100]:
+	start = time.time()
+	threads=[]
+	thread_f = _fire_local()
+        thread_r = _read_local()
+        thread_f.start()
+        thread_r.start()
+        threads.append(thread_f)
+        threads.append(thread_r)
+        for thread in threads:
+		thread.join()
+        end = time.time()
+        times.append(end-start)
+    from matplotlib import pyplot as plt
+    plt.plot(times)
+    plt.show()
+
+
+penetration_local()
 #test_single_create(True)
 
     
