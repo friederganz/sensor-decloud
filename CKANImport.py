@@ -48,6 +48,7 @@ def createStream(streamId, data):
     jsondump = json.dumps(data)
     uri = "http://localhost:8000/streams/%s/data" %streamId
     resp, content = h.request(uri, "POST", jsondump)
+    pprint(resp)
 
 
 def main():
@@ -61,6 +62,7 @@ def main():
     for key in streams:
         wrappedData = wrapData(streams[key])
         createStream(key, wrappedData)
+        # pprint(key)
 
 main()
 
