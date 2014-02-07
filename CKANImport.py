@@ -63,9 +63,10 @@ def main():
     # pprint(streams)
     for key in streams:
         wrappedData = wrapData(streams[key])
-        if not createStream(key, wrappedData):
-            #stream creation failed, abort abort abort 
-            break
+        createStream(key, wrappedData)
+        # if not createStream(key, wrappedData):
+        #     #stream creation failed, abort abort abort
+        #     break
 
 
 main()
