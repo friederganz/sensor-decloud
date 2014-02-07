@@ -48,8 +48,9 @@ def createStream(streamId, data):
     jsondump = json.dumps(data)
     uri = "http://localhost:8000/streams/%s/data" %streamId
     resp, content = h.request(uri, "POST", jsondump)
-    assert resp.status == 200
+    # assert resp.status == 200
     pprint(content)
+    return resp.status == 200
 
 
 def main():
@@ -62,8 +63,10 @@ def main():
     # pprint(streams)
     for key in streams:
         wrappedData = wrapData(streams[key])
-        createStream(key, wrappedData)
-        # pprint(key)
+        if not createStream(key, wrappedData):
+            #stream creation failed, abort abort abort 
+            break
+
 
 main()
 
