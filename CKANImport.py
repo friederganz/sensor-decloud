@@ -49,7 +49,7 @@ def createStream(streamId, data):
     uri = "http://localhost:8000/streams/%s/data" %streamId
     resp, content = h.request(uri, "POST", jsondump)
     # assert resp.status == 200
-    pprint(resp)
+    pprint(content)
     return resp.status == 200
 
 
