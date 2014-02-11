@@ -90,8 +90,7 @@ any_return(Val) -> Val.
 %% @end
 -spec count_fields(Json::string()) -> integer().
 count_fields(Json) ->
-	count_fields(Js
-on,1).
+	count_fields(Json,1).
 
 %% @doc
 %% Function: count_fields/2
