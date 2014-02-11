@@ -81,7 +81,7 @@ any_to_float(Val) ->
 %%Returns: The value coonverted to a string
 %%@end
 -spec any_to_string(any()) -> string().
-any_return(Val) -> list:flatten(io_lib:format("~p",[Val])).
+any_to_string(Val) -> list:flatten(io_lib:format("~p",[Val])).
 
 %% @doc
 %% Function: count_fields/1
