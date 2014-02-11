@@ -93,6 +93,7 @@ process_post(ReqData, State) ->
 							TimeStampAdded = DatapointJson
 					end,
 %%					case api_help:any_to_float(lib_json:get_field(TimeStampAdded, "value")) of
+%% change by Daniel 
 					case api_help:any_return(lib_json:get_field(TimeStampAdded, "value")) of
 						error -> {{halt,403}, wrq:set_resp_body("Value not convertable to type float", ReqData), State};
 						NewVal -> 
