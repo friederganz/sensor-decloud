@@ -77,7 +77,7 @@ any_to_float(Val) ->
 	error.
 
 %%@doc
-%%Purpose: Hack to store different values than float in the system
+%%Purpose: Hack to store different values (i.e. metadata than float in the system
 %%Returns: just the value it has been given
 %%@end
 -spec any_return(any()) -> any().
