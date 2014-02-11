@@ -77,11 +77,11 @@ any_to_float(Val) ->
 	error.
 
 %%@doc
-%%Purpose: Hack to store different values (i.e. metadata than float in the system
-%%Returns: just the value it has been given
+%%Purpose: Hack to store different values (i.e. metadata) than float in the system
+%%Returns: The value coonverted to a string
 %%@end
--spec any_return(any()) -> any().
-any_return(Val) -> Val.
+-spec any_to_string(any()) -> string().
+any_return(Val) -> list:flatten(io_lib:format("~p",[Val])).
 
 %% @doc
 %% Function: count_fields/1
