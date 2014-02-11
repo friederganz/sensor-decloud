@@ -81,7 +81,7 @@ any_to_float(Val) ->
 %%Returns: just the value it has been given
 %%@end
 -spec any_return(any()) -> any().
-any_return(Val) -> Val;
+any_return(Val) -> Val.
 
 %% @doc
 %% Function: count_fields/1
