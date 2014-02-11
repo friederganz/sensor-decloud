@@ -94,7 +94,7 @@ process_post(ReqData, State) ->
 					end,
 %%					case api_help:any_to_float(lib_json:get_field(TimeStampAdded, "value")) of
 %% change by Daniel 
-					case api_help:any_return(lib_json:get_field(TimeStampAdded, "value")) of
+					case api_help:any_to_string(lib_json:get_field(TimeStampAdded, "value")) of
 						error -> {{halt,403}, wrq:set_resp_body("Value not convertable to type float", ReqData), State};
 						NewVal -> 
 						EnforcedFloatJson = lib_json:replace_field(TimeStampAdded, "value", NewVal),
