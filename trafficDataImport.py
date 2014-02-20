@@ -61,7 +61,7 @@ def wrapAndSendData(inp, msgTypes, connection, channelName):
     lastTimeStamp = datetime.strptime(data["data"]["TIMESTAMP"], datetimeFormat)
     return sentData
 
-def main():
+def clusterData():
     connection = establishConnection()
     url = "http://ckan.projects.cavi.dk/api/action/datastore_search"
     resourceValues = "d7e6c54f-dc2a-4fae-9f2a-b036c804837d"
@@ -83,4 +83,4 @@ def main():
     connection.close()
     return
 
-main()
+# main()

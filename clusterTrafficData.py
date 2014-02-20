@@ -194,7 +194,7 @@ def writeToCsv(newValue, metaData, hitbucket):
 
 
 
-def main():
+def importData():
     global logger
     with open('trafficData.csv', 'ab') as csvfile:
         wr = csv.writer(csvfile, delimiter=',', quotechar='\"', quoting=csv.QUOTE_MINIMAL)
@@ -204,7 +204,7 @@ def main():
     channel.start_consuming()
     logger.info("Started main program, waiting for data...")
 
-main()
+# main()
 
 #get iris data set / generated data
 # data = pandas.read_csv("C:\Dropbox\Surrey\DODO_source\Data\iris.csv")
