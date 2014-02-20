@@ -1,12 +1,9 @@
-from math import sqrt
 from random import random
 
 __author__ = 'Daniel'
 from KMeans import *
-from math import sqrt,exp,pi,sin,cos
 from CentroidDetermination import *
 from clusterEvaluation import *
-from GenerateData import generate_from_skeleton
 import pika
 import json
 from RingBuffer import RingBuffer
