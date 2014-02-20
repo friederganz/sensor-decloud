@@ -16,7 +16,7 @@ def establishConnection(hostname='127.0.0.1'):
 
 
 # ,"limit":2
-def importData(url, resource, limit=100):
+def importData(url, resource, limit=10000):
     data_string = urllib.quote(json.dumps({'resource_id': resource, 'limit': limit}))
     response = urllib2.urlopen(url, data_string)
     assert response.code == 200
@@ -69,7 +69,7 @@ def main():
     values = importData(url, resourceValues)
     trafficMetaData = importData(url, resourceMetaData)
     types = ['cluster']
-    print "publish initial data"
+    print "publish initial data of size %i" % len(values)
     wrapAndSendInitialData(values, types, connection, 'traffic')
     #give the CKAN archive time to update data
     sleep(300)

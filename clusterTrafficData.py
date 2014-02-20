@@ -36,18 +36,18 @@ def init(name):
     return channel
 
 
-initialPacketsize = 99
+initialPacketsize = 1000
 packetsize = 10
 centroidinp = [[],[]]
 means = False
 clusterResult = []
 #Here only the features are stored which are taken into account while clustering
-clusterDataStore = RingBuffer(1000)
+clusterDataStore = RingBuffer(5000)
 #Here metadata is stored. Basically everything which is important for later analysis but should not taken into
 # account while clustering (e.g. location, timestamp) . It must be ensured that this buffer is consistent with the
 # buffer above (i.e. index links the data)
 # TODO: Once able to retrieve individual values through CKAN API fill this with values
-metaDataStore = RingBuffer(1000)
+metaDataStore = RingBuffer(5000)
 
 #for performance reasons, the for loop in this method is also used to store the values in the Ring Buffer
 def transform(arr):
@@ -56,6 +56,16 @@ def transform(arr):
         ret.append([arr[0][i], arr[1][i]])
         clusterDataStore.append(ret[i])
     return ret
+
+def recalculated_clustering(inp, k):
+    global logger
+    means = recalculate_centroids(inp, k)
+    kmeansinput = transform(inp)
+    features = len(kmeansinput[0])
+    weights = [1 for i in range(features)]
+    result = kmeans(means, kmeansinput, weights, features, len(means))
+    return result
+
 
 def initial_clustering(inp):
     global logger
@@ -108,18 +118,33 @@ def fakeStreet():
 def callback(ch, method, properties, body):
     global centroidinp, means, clusterResult, m, k, logger, datetimeFormat
     if m > maxm:
+        lastm = m
         m = 0
         centroidinp = [[], []]
-        for x in clusterDataStore:
+        body = json.loads(body)
+        newValue = [body["data"]["avgSpeed"], body["data"]["vehicleCount"]]
+        clusterDataStore.append(newValue)
+        lastTimeStamp = datetime.strptime(body["data"]["TIMESTAMP"], datetimeFormat)
+        street = fakeStreet()
+        metaData = [lastTimeStamp, street]
+        metaDataStore.append(metaData)
+        for x in clusterDataStore.get():
             for i, v in enumerate(x):
                 centroidinp[i].append(v)
         logger.info("Recalcalibrating Centroids...")
-        clusterResult = recalculate_centroids(centroidinp, k)
-        logger.info("New Centroids")
-        means = [{'Average Speed': m[0], 'Vehicle Count': m[1]} for m in clusterResult['means']]
+        clusterResult = recalculated_clustering(centroidinp, k)
+        # logger.info(m)
+        # logger.info(lastm)
+        # logger.info("New Centroids. Last m %i, new m $i" % (lastm, m))
+        means = [{'Average Speed': x[0], 'Vehicle Count': x[1]} for x in clusterResult['means']]
         logger.info(pformat(means))
+        clustersizes = [len(c) for c in clusterResult['cluster']]
+        hitBucket = "n/a"
+        logger.info(pformat(clustersizes))
+        writeToCsv(newValue, metaData, hitBucket)
         return
     if not means:
+        m = 0
         if len(centroidinp[0]) < initialPacketsize:
             body = json.loads(body)
             centroidinp[0].append(body["data"]["avgSpeed"])
@@ -140,7 +165,7 @@ def callback(ch, method, properties, body):
             clustersizes = [len(c) for c in clusterResult['cluster']]
             logger.info(pformat(clustersizes))
             logger.info(pformat(clustersizes))
-            means = [{'Average Speed': m[0], 'Vehicle Count': m[1]} for m in clusterResult['means']]
+            means = [{'Average Speed': x[0], 'Vehicle Count': x[1]} for x in clusterResult['means']]
             logger.info("Centroids:")
             logger.info(pformat(means))
     else:
@@ -155,10 +180,10 @@ def callback(ch, method, properties, body):
         features = len(newValue)
         weights = [1 for i in range(features)]
         clusterResult = kmeans_new_value(clusterResult['means'], clusterResult['cluster'], weights, features, newValue)
-        means = [{'Average Speed': m[0], 'Vehicle Count': m[1]} for m in clusterResult['means']]
+        means = [{'Average Speed': x[0], 'Vehicle Count': x[1]} for x in clusterResult['means']]
         logger.info("Centroids:")
         logger.info(pformat(means))
-        logger.info("Cluster:")
+        logger.info("Cluster Step %i:" % m)
         clustersizes = [len(c) for c in clusterResult['cluster']]
         hitBucket = clusterResult['hit_bucket']
         logger.info(pformat(clustersizes))
