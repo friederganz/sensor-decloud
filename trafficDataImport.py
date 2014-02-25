@@ -61,7 +61,7 @@ def wrapAndSendData(inp, msgTypes, connection, channelName):
     lastTimeStamp = datetime.strptime(data["data"]["TIMESTAMP"], datetimeFormat)
     return sentData
 
-def clusterData():
+def importData():
     connection = establishConnection()
     url = "http://ckan.projects.cavi.dk/api/action/datastore_search"
     resourceValues = "d7e6c54f-dc2a-4fae-9f2a-b036c804837d"
@@ -77,7 +77,8 @@ def clusterData():
         #fetch newest 10 samples
         values = importData(url, resourceValues,10)
         if wrapAndSendData(values,types,connection,'traffic'):
-            print "published new data"
+            time = datetime.now()
+            print str(time)+":published new data"
         #give the CKAN archive time to update data
         sleep(300)
     connection.close()
